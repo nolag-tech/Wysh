@@ -74,16 +74,21 @@ myScript.js
 Console.WriteLine("Hello World!");
 
 // Write output to a buffer
-let myOutput = new Stream();
-myOutput.WriteLine("This is a test.");
-myOutput.WriteLine("We are adding lines ...");
-myOutput.WriteLine("... to a buffer.");
+let myOutput = new StreamBuffer();
+myOutput.Open();
+myOutput.WriteText("This is a test.");
+myOutput.WriteText("We are adding text ...");
+myOutput.WriteText("... to a buffer.");
 myOutput.Position = 0;
 
+
 // Write a buffer to a file
+// normally we would use myOutput.SaveToFile(), but we want to test FSO
 let fso = new FileSystemObject();
-let tempFolder = fso.GetSpecialFolder(2);
-let tempFile = fso.CreateTextFile(tempFolder + "\tempFile.txt", true);
+//let tempFolder = fso.GetSpecialFolder(2); // does not work right now
+let tempFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\temp";
+Console.WriteLine(tempFolder);
+let tempFile = fso.CreateTextFile(tempFolder + "\\tempFile.txt", true);
 tempFile.Write(myOutput.ReadText(-1));
 tempFile.Close();
 

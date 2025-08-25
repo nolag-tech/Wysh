@@ -97,6 +97,7 @@ namespace Wysh {
             V8ScriptEngine engine = new V8ScriptEngine(V8ScriptEngineFlags.EnableArrayConversion | V8ScriptEngineFlags.EnableDateTimeConversion | V8ScriptEngineFlags.EnableStringifyEnhancements);
             
             engine.AddHostType("Console", typeof(Console));
+            engine.AddHostType("Environment", typeof(Environment));
 
             AddComTypes(engine);
             SetSearchPaths(engine);
