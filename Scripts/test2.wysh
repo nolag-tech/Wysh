@@ -1,0 +1,14 @@
+<package>
+<job>
+<script src="TestScript.js"></script>
+<script>
+doOutput();
+
+oExcel = new ExcelApp();
+oExcel.Visible = true;
+oExcel.Workbooks.Add();
+//oExcel.ActiveWorkbook.Queries.FastCombine = true;
+oExcel.ActiveWorkbook.ActiveSheet.Name = "HelloSheet";
+</script>
+</job>
+</package>
