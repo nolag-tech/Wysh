@@ -6,7 +6,7 @@ class Excel {
         this.oExcel.Visible = true;
 
         if (!this.oExcel.ActiveWorkbook) this.oExcel.Workbooks.Add();
-        // this.oExcel.ActiveWorkbok.Queries.FastCombine = true;
+        //this.oExcel.ActiveWorkbook.Queries.FastCombine = true;
     }
 
     openWorkbook(filename) {

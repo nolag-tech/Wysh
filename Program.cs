@@ -1,4 +1,5 @@
-﻿using Microsoft.ClearScript.V8;
+﻿using Microsoft.ClearScript;
+using Microsoft.ClearScript.V8;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -50,7 +51,8 @@ namespace Wysh {
             wsh.Load(scriptSetup["_ScriptName"]);
 
             // instance resources
-            
+            Internal.ScriptResourceProxy resproxy = new Internal.ScriptResourceProxy(wsh);
+            engine.AddHostObject("Resources", resproxy);
 
             // find jobs
             XmlNodeList jobs = wsh.SelectNodes("/package/job");
@@ -85,7 +87,7 @@ namespace Wysh {
             engine.AddCOMType("CDOMessage", "CDO.Message");
             engine.AddCOMType("CDOConfiguration", "CDO.Configuration");
 
-            engine.AddCOMType("ExcelApp", "Excel.Application");
+            engine.AddCOMType("ExcelApp", HostItemFlags.DirectAccess, "Excel.Application");
             engine.AddCOMType("DOMDocument", "Msxml2.DOMDocument.6.0");
 
             // add sleep, scriptname, etc...
@@ -113,7 +115,9 @@ namespace Wysh {
         private void AddWysh(V8ScriptEngine engine) {
             engine.Execute(rsrc.GetString("Lib.Base.js"));
             engine.Execute(rsrc.GetString("Lib.Excel.js"));
-        }
+			engine.Execute(rsrc.GetString("Lib.Email.js"));
+			engine.Execute(rsrc.GetString("Lib.Template.js"));
+		}
 
 		private static Dictionary<string, string> ParseCommand(string[] args) {
             Dictionary<string, string> scriptSetup = new Dictionary<string, string>();
