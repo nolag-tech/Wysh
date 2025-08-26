@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Xml;
 
 
@@ -32,7 +33,10 @@ namespace Wysh {
             Type[] types = _appAssembly.GetTypes();
 			_appNamespace = typeof(Program).Namespace;
 
+            this.rsrc = new Internal.ResourceManager(this);
+
             V8ScriptEngine engine = AcquireEngine(scriptSetup);
+            AddWysh(engine);
 
             // execute based on file extension
             if (scriptSetup["_ScriptName"].EndsWith(".wysh")) ExecuteWysh(engine, scriptSetup["_ScriptName"], scriptSetup);
@@ -46,6 +50,7 @@ namespace Wysh {
             wsh.Load(scriptSetup["_ScriptName"]);
 
             // instance resources
+            
 
             // find jobs
             XmlNodeList jobs = wsh.SelectNodes("/package/job");
@@ -101,8 +106,13 @@ namespace Wysh {
 
             AddComTypes(engine);
             SetSearchPaths(engine);
-            
+
             return engine;
+        }
+
+        private void AddWysh(V8ScriptEngine engine) {
+            engine.Execute(rsrc.GetString("Lib.Base.js"));
+            engine.Execute(rsrc.GetString("Lib.Excel.js"));
         }
 
 		private static Dictionary<string, string> ParseCommand(string[] args) {

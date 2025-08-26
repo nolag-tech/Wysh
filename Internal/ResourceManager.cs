@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
+using System.Text;
 
 namespace Wysh.Internal
 {
@@ -14,19 +15,22 @@ namespace Wysh.Internal
 			parent = prog;
 		}
 
-        public string GetGzString(string name) {
-            string result = null;
-            System.Text.UTF8Encoding enc = new System.Text.UTF8Encoding();
-            byte[] buff = new byte[8198];
+        public string GetString(string name) {
+            Stream stream = GetStream(name);
+            if (stream == null) return "";
+            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8)) {
+                return reader.ReadToEnd();
+            }
+        }
 
+        public string GetGzString(string name) {
             Stream str = GetStream(name);
             if (str == null) return null;
 
             GZipStream gzStream = new GZipStream(str, CompressionMode.Decompress);
-            int length = gzStream.Read(buff, 0, buff.Length);
-            result = enc.GetString(buff, 0, length);
-
-            return result;
+            using (StreamReader reader = new StreamReader(gzStream, Encoding.UTF8)) {
+                return reader.ReadToEnd();
+            }
         }
         
         public object GetJSON(string name) {
@@ -45,8 +49,6 @@ namespace Wysh.Internal
                 throw new Exception(parent.Namespace + ": " + e.Message);
             }
         }
-
-        
 
         public static Stream GetStream(Assembly a, string name) {
             try {
