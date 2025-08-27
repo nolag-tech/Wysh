@@ -9,6 +9,28 @@ Object.defineProperty(Object.prototype, "expand", {
 });
 
 String.expand({
+    left: function (len) {
+        return this.substring(0, len);
+    },
+
+    right: function (len) {
+        return this.substring(this.length - len, this.length);
+    },
+
+    repeat: function (times) {
+        var s = '';
+        for (var i = 0; i < times; i++) s += this;
+        return s;
+    },
+
+    leftPad: function (char, width) {
+        return (char.repeat(width - this.length) + this).right(width);
+    },
+
+    rightPad: function (char, width) {
+        return (this + char.repeat(width - this.length)).left(width);
+    },
+
     trim: function () {
         return this.replace(/^\s+|\s+$/g, "");
     }

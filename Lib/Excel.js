@@ -126,17 +126,19 @@ class Excel {
 		this.nameColumns(columnSpec.names, rangeStart);
 	}
 
-	queryTable(qname, tname, unlink = false) {
-		var odbcStr = "OLEDB;Provider=Microsoft.Mashup.OleDb.1;Data Source=$Workbook$;Location=" + qname + ";Extended Properties=\"\"";
-		var qlist = this.oExcel.ActiveWorkbook.ActiveSheet.ListObjects.Add(3, odbcStr, null, Excel.xlYes, this.oExcel.ActiveWorkbook.ActiveSheet.Range("$A$1"));
+	addQuery(qname, qsource) {
+		return ProxyHelper.ExcelAddQuery(this.oExcel, qname, qsource);
+	}
 
-		/*var qtable = this.oExcel.ActiveWorkbook.ActiveSheet.QueryTables.Add(
-			Connection=odbcStr,
-			Destination=this.oExcel.ActiveWorkbook.ActiveSheet.Range("$A$1")
-		);*/
+	/* BUG: Fails with SourceType is of invalid type. */
+	/* Do we need to use the actual enums from .NET? */
+	queryTable(qname, tname, unlink = false) {
+		var odbcStr = `OLEDB;Provider=Microsoft.Mashup.OleDb.1;Data Source=$Workbook$;Location=${qname};Extended Properties=""`;
+		var qlist = this.oExcel.ActiveWorkbook.ActiveSheet.ListObjects.AddEx(Excel.xlSrcQuery, odbcStr, null, Excel.xlYes, this.oExcel.ActiveWorkbook.ActiveSheet.Range("$A$1"));
+		qlist.DisplayName = tname;
 
 		var qtable = qlist.QueryTable;
-		qtable.CommandType = 2; // xlCmdSql (XlCmdType)
+		qtable.CommandType = Excel.xlCmdSql;
 		qtable.CommandText = "SELECT * FROM [" + qname + "]";
 		qtable.RowNumbers = false;
 		qtable.FillAdjacentFormulas = false;
@@ -149,10 +151,11 @@ class Excel {
 		qtable.AdjustColumnWidth = true;
 		qtable.RefreshPeriod = 0;
 		qtable.PreserveColumnInfo = true;
-		qtable.ListObject.DisplayName = tname;
+		//qtable.ListObject.DisplayName = tname;
 		qtable.Refresh(BackgroundQuery = false);
 
-		if (unlink) qtable.ListObject.Unlink();
+		//if (unlink) qtable.ListObject.Unlink();
+		if (unlink) qlist.Unlink();
 
 		return qtable;
 	}
@@ -609,6 +612,15 @@ Object.assign(Excel, {
 	xlSrcRange: 1,
 	xlSrcXml: 2,
 	xlSrcQuery: 3,
+
+	xlCmdCube: 1,
+	xlCmdSql: 2,
+	xlCmdTable: 3,
+	xlCmdDefault: 4,
+	xlCmdList: 5,
+	xlCmdTableCollection: 6,
+	xlCmdExcel: 7,
+	xlCmdDAX: 8,
 
 	xlTop: -4160,
 	xlCenter: -4108,

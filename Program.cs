@@ -88,6 +88,9 @@ namespace Wysh {
             engine.AddCOMType("CDOConfiguration", "CDO.Configuration");
 
             engine.AddCOMType("ExcelApp", HostItemFlags.DirectAccess, "Excel.Application");
+            //engine.AddHostType("ExcelNet", typeof(Internal.ExcelProxy));
+            engine.AddHostType("ProxyHelper", typeof(Internal.ProxyHelper));
+
             engine.AddCOMType("DOMDocument", "Msxml2.DOMDocument.6.0");
 
             // add sleep, scriptname, etc...

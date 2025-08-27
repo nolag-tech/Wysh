@@ -150,6 +150,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Internal\ExcelProxy.cs" />
+    <Compile Include="Internal\ProxyHelper.cs" />
     <Compile Include="Internal\ResourceManager.cs" />
     <Compile Include="Internal\ScriptResourceProxy.cs" />
     <Compile Include="Program.cs" />
