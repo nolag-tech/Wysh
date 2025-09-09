@@ -10,10 +10,14 @@ Object.defineProperty(Object.prototype, "expand", {
 
 String.expand({
     left: function (len) {
+        if (len <= 0) return '';
+        if (len >= this.length) return this;
         return this.substring(0, len);
     },
 
     right: function (len) {
+        if (len <= 0) return '';
+        if (len >= this.length) return this;
         return this.substring(this.length - len, this.length);
     },
 
@@ -23,17 +27,44 @@ String.expand({
         return s;
     },
 
+    startsWith: function (str) {
+        return (this.left(str.length) == str);
+    },
+
+    endsWith: function (str) {
+        return (this.right(str.length) == str);
+    },
+
     leftPad: function (char, width) {
+        if (!char) char = ' ';
         return (char.repeat(width - this.length) + this).right(width);
     },
 
     rightPad: function (char, width) {
+        if (!char) char = ' ';
         return (this + char.repeat(width - this.length)).left(width);
     },
 
     trim: function () {
         return this.replace(/^\s+|\s+$/g, "");
+    },
+
+    clean: function () {
+        return this.replace(/\s{2,}/g, ' ').trim();
+    },
+
+    reverse: function () {
+        return this.split('').reverse().join('');
+    },
+
+    toInt: function () {
+        return parseInt(this);
+    },
+
+    toFloat: function () {
+        return parseFloat(this);
     }
+
 });
 
 Array.expand({
